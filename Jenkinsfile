@@ -3,7 +3,6 @@ pipeline {
 
   environment {
     SONARQUBE = 'MySonarQube'  // SonarQube server name in Jenkins
-    SNYK_TOKEN = credentials('snyk-token') // Snyk token from Jenkins credentials
   }
 
   stages {
@@ -44,6 +43,9 @@ pipeline {
     }
 
     stage('Security Scan') {
+      environment {
+        SNYK_TOKEN = credentials('snyk-token')
+      }
       steps {
         echo 'Running Snyk security scan...'
         sh '''
