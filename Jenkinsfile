@@ -7,18 +7,6 @@ pipeline {
 
   stages {
 
-    stage('Setup Node.js') {
-      steps {
-        echo 'Installing Node.js manually...'
-        sh '''
-          curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-          apt-get install -y nodejs
-          node -v
-          npm -v
-        '''
-      }
-    }
-
     stage('Build') {
       steps {
         echo 'Installing dependencies...'
@@ -59,7 +47,7 @@ pipeline {
     stage('Deploy to Test Environment') {
       steps {
         echo 'Deploying with Docker Compose...'
-        sh 'docker-compose down || true'  // Stop old containers if any
+        sh 'docker-compose down || true'
         sh 'docker-compose up -d --build'
       }
     }
