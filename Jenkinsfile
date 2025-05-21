@@ -10,14 +10,14 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Installing dependencies...'
-        sh 'npm install'
+        sh '/bin/sh -c "npm install"'
       }
     }
 
     stage('Test') {
       steps {
         echo 'Running unit tests...'
-        sh 'npm test'
+        sh '/bin/sh -c "npm test"'
       }
     }
 
@@ -25,7 +25,7 @@ pipeline {
       steps {
         echo 'Running SonarQube analysis...'
         withSonarQubeEnv(SONARQUBE) {
-          sh 'sonar-scanner'
+          sh '/bin/sh -c "sonar-scanner"'
         }
       }
     }
@@ -37,12 +37,16 @@ pipeline {
       steps {
         echo 'Running Snyk security scan...'
         sh '''
-          npm install -g snyk
-          snyk auth ${SNYK_TOKEN}
-          snyk test || true
+          /bin/sh -c "
+            npm install -g snyk
+            snyk auth ${SNYK_TOKEN}
+            snyk test || true
+          "
         '''
       }
     }
+
+
 
     stage('Deploy to Test Environment') {
       steps {
