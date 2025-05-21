@@ -10,14 +10,14 @@ pipeline {
     stage('Build') {
       steps {
         echo 'Installing dependencies...'
-        bat 'npm install'
+        sh 'npm install'
       }
     }
 
     stage('Test') {
       steps {
         echo 'Running unit tests...'
-        bat 'npm test'
+        sh 'npm test'
       }
     }
 
@@ -25,7 +25,7 @@ pipeline {
       steps {
         echo 'Running SonarQube analysis...'
         withSonarQubeEnv(SONARQUBE) {
-          bat 'sonar-scanner'
+          sh 'sonar-scanner'
         }
       }
     }
@@ -36,10 +36,10 @@ pipeline {
       }
       steps {
         echo 'Running Snyk security scan...'
-        bat '''
+        sh '''
           npm install -g snyk
-          snyk auth %SNYK_TOKEN%
-          snyk test || exit 0
+          snyk auth ${SNYK_TOKEN}
+          snyk test || true
         '''
       }
     }
@@ -47,19 +47,19 @@ pipeline {
     stage('Deploy to Test Environment') {
       steps {
         echo 'Deploying with Docker Compose...'
-        bat 'docker-compose down || exit 0'
-        bat 'docker-compose up -d --build'
+        sh 'docker-compose down || true'
+        sh 'docker-compose up -d --build'
       }
     }
 
     stage('Release') {
       steps {
         echo 'Creating release tag...'
-        bat '''
+        sh '''
           git config --global user.email "naidusaiaishu2003@gmail.com"
           git config --global user.name "AishuN1107"
-          git tag -a v1.0.%BUILD_NUMBER% -m "Release v1.0.%BUILD_NUMBER%"
-          git push origin v1.0.%BUILD_NUMBER%
+          git tag -a v1.0.${BUILD_NUMBER} -m "Release v1.0.${BUILD_NUMBER}"
+          git push origin v1.0.${BUILD_NUMBER}
         '''
       }
     }
@@ -67,7 +67,7 @@ pipeline {
     stage('Monitoring & Alerts') {
       steps {
         echo 'Monitoring health check...'
-        bat 'curl -f http://localhost:3000/health || echo Health check failed'
+        sh 'curl -f http://localhost:3000/health || echo "Health check failed"'
       }
     }
   }
