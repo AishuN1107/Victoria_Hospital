@@ -19,7 +19,7 @@
   "homepage": "https://github.com/AishuN1107/Victoria-Hospital-Appointment-Booking-Platform#readme",
   "dependencies": {
     "bcryptjs": "^3.0.2",
-    "body-parser": "^2.2.0",
+    "body-parser": "^2.2.1",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
